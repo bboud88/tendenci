@@ -1,0 +1,50 @@
+{% extends "events/base.html" %}
+{% load event_tags %}
+{% load styled_forms %}
+{% load i18n %}
+
+{% block title %}{{ block.super }}{% trans "Member Registration" %} {% blocktrans with title=event.title %}{{ title }}{% endblocktrans %} {{ event.start_dt|date:"M j, Y" }}{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/events.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}css/iconrow.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/usergroups.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/admin/django-admin-widgets.css">
+{% endblock %}
+
+{% block content %}
+<div class="t">
+    <h1>{% trans "Member Registration" %}</h1>
+    <div class="form-wrap">
+        <form action="{% url "event.member_register" event.pk %}" method="post">{% csrf_token %}
+            <div class="forms">
+                {{ form|styled_form }}
+                <input type="submit" id="add_members_submit" value="{% trans "Register Members" %}"/>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extra_body %}
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/admin/django-admin.multiselect.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        jQuery.each($("select[multiple]"), function () {
+         SelectFilter2.init(this.id, "Members", 0, "/media/");
+        });
+        $("#add_members_submit").click(function(){
+            SelectBox.filter('id_members_to', '');
+            $("#id_members_input2").val('');
+        });
+    });
+</script>
+<style>
+  .container .ten.columns {
+    width: 622px;
+}
+</style>
+{% endblock %}
